@@ -1,11 +1,8 @@
 {% extends 'layout.html' %}
-
 {% block title %}
     Products of Category {{category.name}}
 {% endblock %}
-
 {% block content %}
-
 <h1 class="display-1">
     Products of Category {{category.name}}
 </h1>
@@ -13,8 +10,6 @@
     <i class="fas fa-plus    "></i>
     Add
 </a>
-
-
 <table class="table">
     <thead>
         <tr>
@@ -35,15 +30,11 @@
             <td>{{product.quantity}}</td>
             <td>{{product.man_date}}</td>
             <td>
-                <a href="{{url_for('show_category', id=category.id)}}" class="btn btn-primary">
-                    <i class="fas fa-search    "></i>
-                    Show
-                </a>
-                <a href="{{url_for('edit_category', id=category.id)}}" class="btn btn-primary">
+                <a href="{{url_for('edit_product', id=product.id)}}" class="btn btn-primary">
                     <i class="fas fa-edit    "></i>
                     Edit
                 </a>
-                <a href="{{url_for('delete_category', id=category.id)}}" class="btn btn-danger">
+                <a href="{{url_for('delete_product', id=product.id)}}" class="btn btn-danger">
                     <i class="fas fa-trash    "></i>
                     Delete
                 </a>
@@ -52,5 +43,5 @@
         {% endfor %}
     </tbody>
 </table>
-
+    
 {% endblock %}
