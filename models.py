@@ -17,7 +17,7 @@ class Category(db.Model):
     name = db.Column(db.String(64), nullable = False)
 
     ## relationships
-    products = db.relationship('Product', backref='category', lazy=True)
+    products = db.relationship('Product', backref='category', lazy=True, cascade='all, delete-orphan')
 
 class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -28,8 +28,8 @@ class Product(db.Model):
     man_date = db.Column(db.Date, nullable = False)
     
     ## relationships
-    carts = db.relationship('Cart', backref='product', lazy=True)
-    orders = db.relationship('Order', backref='product', lazy=True)
+    carts = db.relationship('Cart', backref='product', lazy=True, cascade='all, delete-orphan')
+    orders = db.relationship('Order', backref='product', lazy=True, cascade='all, delete-orphan')
 
 class Cart(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -44,8 +44,7 @@ class Transaction(db.Model):
     total = db.Column(db.Float, nullable = False)
     
     ## relationships
-    orders = db.relationship('Order', backref='transaction', lazy=True)
-
+    orders = db.relationship('Order', backref='transaction', lazy=True, cascade='all, delete-orphan')
 class Order(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     transaction_id = db.Column(db.Integer, db.ForeignKey('transaction.id'), nullable = False)
