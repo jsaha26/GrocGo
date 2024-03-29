@@ -4,13 +4,16 @@ from models import db, User, Category, Product, Cart, Transaction, Order
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
 from datetime import datetime
+
 @app.route('/login')
 def login():
     return render_template('login.html')
+
 @app.route('/login', methods=['POST'])
 def login_post():
     username = request.form.get('username')
     password = request.form.get('password')
+
     if not username or not password:
         flash('Please fill out all fields')
         return redirect(url_for('login'))
@@ -28,15 +31,19 @@ def login_post():
     session['user_id'] = user.id
     flash('Login successful')
     return redirect(url_for('index'))
+
+
 @app.route('/register')
 def register():
     return render_template('register.html')
+
 @app.route('/register', methods=['POST'])
 def register_post():
     username = request.form.get('username')
     password = request.form.get('password')
     confirm_password = request.form.get('confirm_password')
     name = request.form.get('name')
+
     if not username or not password or not confirm_password:
         flash('Please fill out all fields')
         return redirect(url_for('register'))
@@ -46,6 +53,7 @@ def register_post():
         return redirect(url_for('register'))
     
     user = User.query.filter_by(username=username).first()
+
     if user:
         flash('Username already exists')
         return redirect(url_for('register'))
@@ -56,8 +64,12 @@ def register_post():
     db.session.add(new_user)
     db.session.commit()
     return redirect(url_for('login'))
+
+
 # ----
+
 # decorator for auth_required
+
 def auth_required(func):
     @wraps(func)
     def inner(*args, **kwargs):
@@ -67,6 +79,7 @@ def auth_required(func):
             flash('Please login to continue')
             return redirect(url_for('login'))
     return inner
+
 def admin_required(func):
     @wraps(func)
     def inner(*args, **kwargs):
@@ -80,11 +93,13 @@ def admin_required(func):
         return func(*args, **kwargs)
     return inner
 
+
 @app.route('/profile')
 @auth_required
 def profile():
     user = User.query.get(session['user_id'])
     return render_template('profile.html', user=user)
+
 @app.route('/profile', methods=['POST'])
 @auth_required
 def profile_post():
@@ -92,6 +107,7 @@ def profile_post():
     cpassword = request.form.get('cpassword')
     password = request.form.get('password')
     name = request.form.get('name')
+
     if not username or not cpassword or not password:
         flash('Please fill out all the required fields')
         return redirect(url_for('profile'))
@@ -114,7 +130,10 @@ def profile_post():
     db.session.commit()
     flash('Profile updated successfully')
     return redirect(url_for('profile'))
+
     
+
+
 @app.route('/logout')
 @auth_required
 def logout():
@@ -122,19 +141,23 @@ def logout():
     return redirect(url_for('login'))
     
     # --- admin pages
+
 @app.route('/admin')
 @admin_required
 def admin():
     categories = Category.query.all()
     return render_template('admin.html', categories=categories)
+
 @app.route('/category/add')
 @admin_required
 def add_category():
     return render_template('category/add.html')
+
 @app.route('/category/add', methods=['POST'])
 @admin_required
 def add_category_post():
     name = request.form.get('name')
+
     if not name:
         flash('Please fill out all fields')
         return redirect(url_for('add_category'))
@@ -142,9 +165,11 @@ def add_category_post():
     category = Category(name=name)
     db.session.add(category)
     db.session.commit()
+
     flash('Category added successfully')
     return redirect(url_for('admin'))
     
+
 @app.route('/category/<int:id>/')
 @admin_required
 def show_category(id):
@@ -153,6 +178,8 @@ def show_category(id):
         flash('Category does not exist')
         return redirect(url_for('admin'))
     return render_template('category/show.html', category=category)
+
+
 @app.route('/category/<int:id>/edit')
 @admin_required
 def edit_category(id):
@@ -161,6 +188,7 @@ def edit_category(id):
         flash('Category does not exist')
         return redirect(url_for('admin'))
     return render_template('category/edit.html', category=category)
+
 @app.route('/category/<int:id>/edit', methods=['POST'])
 @admin_required
 def edit_category_post(id):
@@ -176,6 +204,7 @@ def edit_category_post(id):
     db.session.commit()
     flash('Category updated successfully')
     return redirect(url_for('admin'))
+
 @app.route('/category/<int:id>/delete')
 @admin_required
 def delete_category(id):
@@ -184,6 +213,7 @@ def delete_category(id):
         flash('Category does not exist')
         return redirect(url_for('admin'))
     return render_template('category/delete.html', category=category)
+
 @app.route('/category/<int:id>/delete', methods=['POST'])
 @admin_required
 def delete_category_post(id):
@@ -193,8 +223,10 @@ def delete_category_post(id):
         return redirect(url_for('admin'))
     db.session.delete(category)
     db.session.commit()
+
     flash('Category deleted successfully')
     return redirect(url_for('admin'))
+
 @app.route('/product/add/<int:category_id>')
 @admin_required
 def add_product(category_id):
@@ -214,10 +246,12 @@ def add_product_post():
     category_id = request.form.get('category_id')
     quantity = request.form.get('quantity')
     man_date = request.form.get('man_date')
+
     category = Category.query.get(category_id)
     if not category:
         flash('Category does not exist')
         return redirect(url_for('admin'))
+
     if not name or not price or not quantity or not man_date:
         flash('Please fill out all fields')
         return redirect(url_for('add_product', category_id=category_id))
@@ -228,6 +262,7 @@ def add_product_post():
     except ValueError:
         flash('Invalid quantity or price')
         return redirect(url_for('add_product', category_id=category_id))
+
     if price <= 0 or quantity <= 0:
         flash('Invalid quantity or price')
         return redirect(url_for('add_product', category_id=category_id))
@@ -235,6 +270,7 @@ def add_product_post():
     if man_date > datetime.now():
         flash('Invalid manufacturing date')
         return redirect(url_for('add_product', category_id=category_id))
+
     product = Product(name=name, price=price, category=category, quantity=quantity, man_date=man_date)
     db.session.add(product)
     db.session.commit()
@@ -277,7 +313,7 @@ def edit_product_post(id):
     if price <= 0 or quantity <= 0:
         flash('Invalid quantity or price')
         return redirect(url_for('add_product', category_id=category_id))
-
+    
     if man_date > datetime.now():
         flash('Invalid manufacturing date')
         return redirect(url_for('add_product', category_id=category_id))
@@ -325,8 +361,29 @@ def index():
     user = User.query.get(session['user_id'])
     if user.is_admin:
         return redirect(url_for('admin'))
+
+    parameter = request.args.get('parameter')
+    query = request.args.get('query')
+
     categories = Category.query.all()
-    return render_template('index.html', categories=categories)
+
+    parameters = {
+        'cname': 'Category Name',
+        'pname': 'Product Name',
+        'price': 'Max Price'
+    }
+
+    if parameter == 'cname':
+        categories = Category.query.filter(Category.name.ilike(f'%{query}%')).all()
+        return render_template('index.html', categories=categories, parameters=parameters, query=query)
+    elif parameter == 'pname':
+        return render_template('index.html', categories=categories, param=parameter, pname=query, parameters=parameters, query=query)
+    elif parameter == 'price':
+        query = float(query)
+        return render_template('index.html', categories=categories, param=parameter, price=query, parameters=parameters, query=query)
+
+
+    return render_template('index.html', categories=categories, parameters=parameters)
 
 @app.route('/add_to_cart/<int:product_id>', methods=['POST'])
 @auth_required
