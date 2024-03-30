@@ -12,21 +12,35 @@
     {% block style %}
         <!-- Additional CSS styles can be added here -->
     {% endblock %}
+    <style>
+        html, body {
+            height: 100%;
+        }
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .content {
+            flex: 1;
+        }
+    </style>
 </head>
 <body>
-    {% include 'navbar.html' with context %}
-    {% include 'messages.html' with context %}
-    <div class="container">
-        {% block content %}
-            <!-- Main content goes here -->
+    <div class="wrapper">
+        {% include 'navbar.html' with context %}
+        {% include 'messages.html' with context %}
+        <div class="container content">
+            {% block content %}
+                <!-- Main content goes here -->
+            {% endblock %}
+        </div>
+
+        {% block footer %}
+        <!-- Footer content goes here -->
+            {% include 'footer.html' %}
         {% endblock %}
     </div>
-
-    {% block footer %}
-    <!-- Footer content goes here -->
-        {% include 'footer.html' %}
-
-    {% endblock %}
 
     {% block script %}
         <!-- Additional scripts can be included here -->
