@@ -19,7 +19,7 @@
         <tr>
             <th>Category ID</th>
             <th>Category Name</th>
-            <th>Number of Products</th>
+            <th># of Products</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -48,4 +48,44 @@
     </tbody>
 </table>
 
+<hr>
+
+<h2 class="display-2">Summary:</h2>
+<div>
+  <canvas id="myChart"></canvas>
+</div>
+
+{% endblock %}
+
+{% block style %}
+
+{% endblock %}
+
+{% block script %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  const ctx = document.getElementById('myChart');
+
+  // Fix: add `[]` to create arrays for the data
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: JSON.parse('{{category_names|tojson}}'),
+      datasets: [{
+        label: '# of Products',
+        data: JSON.parse('{{category_sizes|tojson}}'),
+        borderWidth: 1
+      }]
+    },
+    options: {
+      scales: {
+        y: {
+          beginAtZero: true
+        }
+      }
+    }
+  });
+</script>
 {% endblock %}
