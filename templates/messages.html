@@ -4,7 +4,7 @@
       {% for message in messages %}
         <div class="alert alert-{{ 'success' if 'success' in message|lower else 'danger' }}" role="alert" style="position: relative;">
           {{ message }}
-          <button type="button" class="btn-close position-absolute top-3 end-0" data-bs-dismiss="alert" aria-label="Close"></button>
+          <button type="button" class="btn-close position-absolute top-3 end-1" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
       {% endfor %}
     </div>

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Grocery Shop{% endblock %}</title>
+    <title>{% block title %}GrocGo{% endblock %}</title>
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <!-- Font Awesome CSS -->
@@ -21,6 +21,12 @@
             <!-- Main content goes here -->
         {% endblock %}
     </div>
+
+    {% block footer %}
+    <!-- Footer content goes here -->
+        {% include 'footer.html' %}
+
+    {% endblock %}
 
     {% block script %}
         <!-- Additional scripts can be included here -->
