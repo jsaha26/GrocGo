@@ -5,56 +5,56 @@
 {% endblock %}
 
 {% block content %}
-
-<h1 class="display-1">Admin Dashboard</h1>
-<a href="{{url_for('add_category')}}" class="btn btn-success">
-    <i class="fas fa-plus    "></i>
-    Add
-</a>
-
-<h2 class="display-2">Categories:</h2>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>Category ID</th>
-            <th>Category Name</th>
-            <th># of Products</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for category in categories %}
-        <tr>
-            <td>{{category.id}}</td>
-            <td>{{category.name}}</td>
-            <td>{{category.products|length}}</td>
-            <td>
-                <a href="{{url_for('show_category', id=category.id)}}" class="btn btn-primary">
-                    <i class="fas fa-search    "></i>
-                    Show
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <h1 class="display-4 mb-4">Admin Dashboard</h1>
+                <a href="{{url_for('add_category')}}" class="btn btn-success mb-4">
+                    <i class="fas fa-plus me-2"></i> Add
                 </a>
-                <a href="{{url_for('edit_category', id=category.id)}}" class="btn btn-primary">
-                    <i class="fas fa-edit    "></i>
-                    Edit
-                </a>
-                <a href="{{url_for('delete_category', id=category.id)}}" class="btn btn-danger">
-                    <i class="fas fa-trash    "></i>
-                    Delete
-                </a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
 
-<hr>
+                <h2 class="display-5 mb-3">Categories:</h2>
 
-<h2 class="display-2">Summary:</h2>
-<div>
-  <canvas id="myChart"></canvas>
-</div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Category ID</th>
+                            <th>Category Name</th>
+                            <th># of Products</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for category in categories %}
+                            <tr>
+                                <td>{{category.id}}</td>
+                                <td>{{category.name}}</td>
+                                <td>{{category.products|length}}</td>
+                                <td>
+                                    <a href="{{url_for('show_category', id=category.id)}}" class="btn btn-primary me-2">
+                                        <i class="fas fa-search me-1"></i> Show
+                                    </a>
+                                    <a href="{{url_for('edit_category', id=category.id)}}" class="btn btn-primary me-2">
+                                        <i class="fas fa-edit me-1"></i> Edit
+                                    </a>
+                                    <a href="{{url_for('delete_category', id=category.id)}}" class="btn btn-danger">
+                                        <i class="fas fa-trash me-1"></i> Delete
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
 
+                <hr>
+
+                <h2 class="display-5 mb-3">Summary:</h2>
+                <div>
+                    <canvas id="myChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
 
 {% block style %}
@@ -62,30 +62,30 @@
 {% endblock %}
 
 {% block script %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('myChart');
 
-<script>
-  const ctx = document.getElementById('myChart');
-
-  // Fix: add `[]` to create arrays for the data
-  new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: JSON.parse('{{category_names|tojson}}'),
-      datasets: [{
-        label: '# of Products',
-        data: JSON.parse('{{category_sizes|tojson}}'),
-        borderWidth: 1
-      }]
-    },
-    options: {
-      scales: {
-        y: {
-          beginAtZero: true
-        }
-      }
-    }
-  });
-</script>
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: JSON.parse('{{category_names|tojson}}'),
+                datasets: [{
+                    label: '# of Products',
+                    data: JSON.parse('{{category_sizes|tojson}}'),
+                    borderWidth: 1,
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)', // Adjusted chart color
+                    borderColor: 'rgba(54, 162, 235, 1)', // Adjusted chart color
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
 {% endblock %}
